@@ -4,12 +4,13 @@ import os
 grid = []
 p_Pos = [1, 1]	# Player position
 lp_Pos = [1, 1]	# Last player position
-gridH = 10
-gridL = 10
+gridH = 20
+gridL = 40
 
 messageLog = []
+mL_shown_length = 10
 
-spacer = '=' * 40
+spacer = '=' * 2 * gridL
 
 # Can move?
 cm_N = False
@@ -22,22 +23,22 @@ class move:
 		if cm_N:
 			p_Pos[0] -= 1
 		else:
-			messageLog.append('Cant move north')
+			messageLog.append('Can\'t move north.')
 	def moveEast():
 		if cm_E:
 			p_Pos[1] += 1
 		else:
-			messageLog.append('Cant move east')
+			messageLog.append('Can\'t move east.')
 	def moveSouth():
 		if cm_S:
 			p_Pos[0] += 1
 		else:
-			messageLog.append('Cant move south')
+			messageLog.append('Can\'t move south.')
 	def moveWest():
 		if cm_W:
 			p_Pos[1] -= 1
 		else:
-			messageLog.append('Cant move west')
+			messageLog.append('Can\'t move west.')
 
 	def canMove():
 		global cm_N
@@ -79,13 +80,15 @@ def initGrid(height, length):
 	# Initialize the player's position
 	grid[p_Pos[0]][p_Pos[1]] = 'P'
 
-	# Initizlize walls
+	# Initialize walls, first is vertical walls, second is horizontal walls
 	for i in range(height):
 		grid[i][0] = 'w'
 		grid[i][length - 1] = 'w'
-		for j in range(length - 1):
-			if i == 0 or i == (length - 1):
-				grid[i][j] = 'w'
+	for i in range(length):
+		grid[0][i] = 'w'
+		grid[height - 1][i] = 'w'
+
+	print(grid[height- 1])
 
 def help():
 	print('This is some example help text.')
@@ -115,9 +118,15 @@ def main_loop():
 		printMap()
 
 		move.canMove()
-
-		for message in messageLog:
-			print(message)
+		
+		print(spacer)
+		if len(messageLog) < mL_shown_length:
+			print("\n" * (mL_shown_length - len(messageLog) - 1))
+			for i in range(len(messageLog)):
+				print(str(i + 1) + ': ' + messageLog[i])
+		else:
+			for i in range(len(messageLog) - mL_shown_length, len(messageLog)):
+				print(str(i + 1) + ': ' + messageLog[i])
 
 		print(spacer)
 		#print(p_Pos)
@@ -151,7 +160,7 @@ def main_loop():
 			exit()
 		else:
 			os.system('clear')
-			messageLog.append('invalid move, please input another direction')
+			messageLog.append('Command not recognized')
 
 def init():
 	initGrid(gridH, gridL)
